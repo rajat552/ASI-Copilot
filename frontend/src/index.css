@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4285F4;
+  --color-secondary: #8b5cf6;
+  --color-accent: #f43f5e;
+
+  /* Defaults represent Dark Mode */
+  --color-app-bg: #09090b;
+  --color-card-bg: #18181b;
+  --color-text-main: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+
+  --font-sans: "Inter", "Outfit", system-ui, sans-serif;
+}
+
+/* Light mode overrides */
+:root:not(.dark) {
+  --color-app-bg: #f8fafc;
+  --color-card-bg: #ffffff;
+  --color-text-main: #1e293b;
+  --color-text-muted: #64748b;
+  --color-border-subtle: rgba(0, 0, 0, 0.05);
+}
+
+@layer base {
+  body {
+    @apply bg-app-bg text-text-main font-sans transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card-bg transition-all duration-300 border border-border-subtle rounded-3xl shadow-2xl;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/10 rounded-full hover:bg-primary/20 transition-colors;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
