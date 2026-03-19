@@ -39,7 +39,7 @@ const Home = () => {
                         transition={{ delay: 0.2 }}
                         className="text-xl text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed"
                     >
-                        Agentix AI leverages ASI-1 API to understand your input, generate workflows, and execute tasks intelligently.
+                        ASI Copilot leverages ASI-1 API to understand your input, generate workflows, and execute tasks intelligently.
                     </motion.p>
 
                     <motion.div

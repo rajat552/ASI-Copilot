@@ -17,7 +17,7 @@ const Footer = () => {
                                 <Bot size={22} />
                             </div>
                             <div>
-                                <span className="text-xl font-black tracking-tight gradient-text">AGENTIX</span>
+                                <span className="text-xl font-black tracking-tight gradient-text">ASI</span>
                                 <span className="text-[10px] block font-bold text-text-muted tracking-[0.2em] -mt-1 ml-1 uppercase">AI</span>
                             </div>
                         </div>
@@ -62,7 +62,7 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="pt-8 border-t border-border-subtle flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-text-muted text-xs">
-                        &copy; {new Date().getFullYear()} AGENTIX Technologies. All rights reserved.
+                        &copy; {new Date().getFullYear()} ASI Technologies. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-xs text-text-muted">
                         <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
