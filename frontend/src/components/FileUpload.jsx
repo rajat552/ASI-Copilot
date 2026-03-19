@@ -40,7 +40,7 @@ const FileUpload = ({ onAnalysisComplete }) => {
             const data = await analyzeDocument(file);
             setProgress(100);
             setTimeout(() => {
-                onAnalysisComplete(data.reply || data.analysis || data.response || "Document analyzed successfully.");
+                onAnalysisComplete(data);
                 setIsUploading(false);
             }, 500);
         } catch (err) {

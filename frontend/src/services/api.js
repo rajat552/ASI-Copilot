@@ -2,8 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/ai';
 
-// Generate a unique session ID per page load so anyone can chat independently.
-// On refresh, a new session is generated and the chat starts fresh.
+// Generate a unique session ID for the current chat session
 const sessionId = 'session-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now().toString(36);
 
 const api = axios.create({

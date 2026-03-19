@@ -4,7 +4,7 @@ import { Sparkles, BrainCircuit, ListChecks, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const DocumentUpload = () => {
-    const [analysis, setAnalysis] = useState(null);
+    const [analysisData, setAnalysisData] = useState(null);
 
     return (
         <div className="pt-32 max-w-5xl mx-auto px-6 pb-20">
@@ -15,9 +15,9 @@ const DocumentUpload = () => {
                 </p>
             </header>
 
-            <FileUpload onAnalysisComplete={(res) => setAnalysis(res)} />
+            <FileUpload onAnalysisComplete={(res) => setAnalysisData(res)} />
 
-            {analysis && (
+            {analysisData && (
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -40,7 +40,7 @@ const DocumentUpload = () => {
                                 Executive Summary <ArrowRight size={14} />
                             </h3>
                             <div className="bg-white/5 p-6 rounded-2xl text-gray-300 leading-relaxed italic border border-white/5 bg-gradient-to-br from-white/[0.03] to-transparent">
-                                {analysis}
+                                {analysisData?.summary || analysisData?.reply || analysisData?.analysis || analysisData?.response || "Document analyzed successfully."}
                             </div>
                         </div>
 
@@ -60,9 +60,17 @@ const DocumentUpload = () => {
                                 <h4 className="font-bold text-accent mb-4 flex items-center gap-2">
                                     <BrainCircuit size={20} /> Architecture Insights
                                 </h4>
-                                <p className="text-sm text-gray-400 leading-relaxed">
-                                    The document emphasizes modularity and asynchronous processing. Suggesting a serverless approach for task handlers.
-                                </p>
+                                {analysisData?.insights && analysisData?.insights.length > 0 ? (
+                                    <ul className="space-y-3 text-sm text-gray-400">
+                                        {analysisData.insights.map((insight, idx) => (
+                                            <li key={idx} className="flex gap-2"><span>-</span> {insight}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-sm text-gray-400 leading-relaxed">
+                                        No specific insights extracted.
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>

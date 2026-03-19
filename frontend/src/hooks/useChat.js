@@ -6,7 +6,6 @@ export const useChat = () => {
     const [messages, setMessages] = useState([defaultMessage]);
     const [loading, setLoading] = useState(false);
 
-    // History loading removed. Chat starts completely fresh upon refresh.
 
     const sendMessage = useCallback(async (content) => {
         if (!content.trim()) return null;

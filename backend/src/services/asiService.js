@@ -46,9 +46,9 @@ class AsiService {
 
     async generateTasksWorkflow(prompt) {
         try {
-            const systemInstruction = "You are an ASI Task Generation Agent. Extract actionable tasks based on the prompt. Return valid JSON array with 'title' and 'description'.";
+            const systemInstruction = "You are an ASI Task Generation Agent. Carefully extract ONLY explicit and actionable tasks based strictly on the user's prompt. Do not invent or hallucinate tasks. If no concrete tasks are found, return an empty array `[]`. Return a valid JSON array of objects with simply 'title' and 'description' properties. DO NOT include any conversational text, explanations, or markdown blocks. ONLY output the RAW JSON array.";
             const payload = {
-                model: "asi-1",
+                model: "asi1",
                 messages: [
                     { role: "system", content: systemInstruction },
                     { role: "user", content: prompt }
@@ -71,7 +71,7 @@ class AsiService {
 
     async analyzeDocumentWorkflow(text) {
         const payload = {
-            model: "asi-1",
+            model: "asi1",
             messages: [
                 { role: "system", content: "You are an ASI Document Analyzer. Provide concise summaries and key insights." },
                 { role: "user", content: `Please analyze the following document:\n\n${text}` }
@@ -84,9 +84,9 @@ class AsiService {
 
     async detectIntent(taskCommand) {
         const payload = {
-            model: "asi-1",
+            model: "asi1",
             messages: [
-                { role: "system", content: "You are an Intent Detection Agent. Identify if the command requires 'summarization', 'task_generation', or 'general_chat'. Respond with JSON format { 'intents': ['intent'] }." },
+                { role: "system", content: "You are an Intent Detection Agent. Identify if the command requires 'summarization', 'task_generation', or 'general_chat'. Respond with RAW JSON ONLY in format { \"intents\": [\"intent\"] }. Do not include any conversational text or markdown blocks." },
                 { role: "user", content: `Command: "${taskCommand}"` }
             ]
         };
@@ -102,7 +102,7 @@ class AsiService {
 
     async executeGenericPrompt(prompt) {
         const payload = {
-            model: "asi-1",
+            model: "asi1",
             messages: [
                 { role: "system", content: "You are a helpful ASI Copilot." },
                 { role: "user", content: prompt }

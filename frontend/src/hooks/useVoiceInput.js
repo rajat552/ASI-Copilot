@@ -33,14 +33,12 @@ export const useVoiceInput = (onResult) => {
                 
                 console.log(`🎤 [Voice Input] Interim: "${interimTranscript}", Final: "${finalTranscript}"`);
                 
-                // If we get a final transcript, we stop and emit
                 if (finalTranscript) {
                     const text = finalTranscript.trim();
                     if (text && onResultRef.current) {
                         onResultRef.current(text);
                     }
                     
-                    // Automatically stop listening after one command
                     isListeningRef.current = false;
                     setIsListening(false);
                     try { rec.stop(); } catch(e) {}
@@ -55,7 +53,7 @@ export const useVoiceInput = (onResult) => {
             rec.onerror = (event) => {
                 if (event.error === 'no-speech') {
                     console.log('🎤 [Voice Input] No speech detected. Waiting...');
-                    return; // Ignore and let it naturally timeout or continue
+                    return;
                 }
                 
                 if (event.error !== 'aborted') {
@@ -70,12 +68,12 @@ export const useVoiceInput = (onResult) => {
                     case 'not-allowed':
                     case 'service-not-allowed':
                         errorMessage = 'Microphone access denied. Please allow microphone permissions.';
-                        isListeningRef.current = false; // Stop forcefully
+                        isListeningRef.current = false;
                         setIsListening(false);
                         break;
                     case 'audio-capture':
                         errorMessage = 'No microphone found. Please check your hardware.';
-                        isListeningRef.current = false; // Stop forcefully
+                        isListeningRef.current = false;
                         setIsListening(false);
                         break;
                     case 'aborted':
@@ -92,7 +90,6 @@ export const useVoiceInput = (onResult) => {
 
             rec.onend = () => {
                 console.log('🎤 [Voice Input] Listening ended (Microphone turned off).');
-                // Ensure state matches
                 if (isListeningRef.current) {
                    isListeningRef.current = false;
                    setIsListening(false);
