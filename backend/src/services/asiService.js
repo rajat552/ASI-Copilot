@@ -160,12 +160,24 @@ Respond with RAW JSON ONLY. No markdown.`;
         const content = JSON.stringify(payload).toLowerCase();
         
         if (content.includes("intent detection agent") || content.includes("{ \"intents\"")) {
+            if (content.includes("hij") || content.includes("hi") || content.includes("hello") || content.includes("hey") || content.includes("how are you")) {
+                return '{ "intents": ["general_chat"] }';
+            }
             return '{ "intents": ["task_generation"] }';
         }
         if (content.includes("document analyzer")) {
             return "This is a mock ASI-1 document summary. The document contains technical specifications for an AI workflow automation platform.";
         }
         if (content.includes("autonomous ai planning agent")) {
+            // Check if the prompt is very short or likely a greeting that bypassed intent detection
+            const userPrompt = payload.messages[payload.messages.length - 1].content.toLowerCase();
+            if (userPrompt.length < 5 || userPrompt.includes("hii") || userPrompt.includes("dz") || userPrompt.includes("rajat")) {
+                return JSON.stringify({
+                    need_clarification: true,
+                    questions: ["How can I help you today?", "Would you like to analyze a document or create a task list?"]
+                });
+            }
+
             return JSON.stringify({
                 goal: "Build a web app",
                 understanding: "The user wants to create a web app but hasn't specified the technology stack or purpose.",

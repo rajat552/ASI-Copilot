@@ -22,13 +22,22 @@ const TaskManager = () => {
         fetchTasks();
     }, []);
 
+    const [isCreating, setIsCreating] = useState(false);
+
     const handleCreateTask = async () => {
-        if (!newTitle.trim()) return;
-        await createTask({ title: newTitle.trim(), description: newDescription.trim() });
-        setNewTitle('');
-        setNewDescription('');
-        setShowModal(false);
-        fetchTasks();
+        if (!newTitle.trim() || isCreating) return;
+        setIsCreating(true);
+        try {
+            await createTask({ title: newTitle.trim(), description: newDescription.trim() });
+            setNewTitle('');
+            setNewDescription('');
+            setShowModal(false);
+            await fetchTasks();
+        } catch (error) {
+            console.error("Task creation failed", error);
+        } finally {
+            setIsCreating(false);
+        }
     };
 
     const handleToggle = async (id) => {
@@ -145,10 +154,15 @@ const TaskManager = () => {
                             </button>
                             <button
                                 onClick={handleCreateTask}
-                                disabled={!newTitle.trim()}
-                                className="px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                disabled={!newTitle.trim() || isCreating}
+                                className="px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
                             >
-                                Create
+                                {isCreating ? (
+                                    <>
+                                        <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        Creating...
+                                    </>
+                                ) : 'Create'}
                             </button>
                         </div>
                     </div>

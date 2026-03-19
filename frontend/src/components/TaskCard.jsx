@@ -29,9 +29,10 @@ const TaskCard = ({ _id, title, description, status, priority = 'medium', onTogg
                             <ArrowUpRight size={14} className="text-text-muted group-hover:text-primary transition-colors flex-shrink-0" />
                         )}
                         <button 
-                            className="text-text-muted hover:text-red-500 transition-colors flex-shrink-0 ml-2 opacity-0 group-hover:opacity-100"
+                            className="text-text-muted hover:text-red-500 transition-colors flex-shrink-0 ml-2 opacity-0 group-hover:opacity-100 p-1"
                             onClick={(e) => {
                                 e.stopPropagation();
+                                e.preventDefault();
                                 if (onDelete) onDelete(_id);
                             }}
                             title="Delete Task"
