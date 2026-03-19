@@ -44,8 +44,8 @@ const TaskCard = ({ _id, title, description, status, priority = 'medium', onTogg
                     </p>
 
                     <div className="flex items-center gap-3 mt-4">
-                        <span className={`text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-[0.15em] border ${priority === 'high' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                                priority === 'medium' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' :
+                        <span className={`text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-[0.15em] border ${priority?.toLowerCase() === 'high' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                                priority?.toLowerCase() === 'medium' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' :
                                     'bg-green-500/10 text-green-500 border-green-500/20'
                             }`}>
                             {priority}

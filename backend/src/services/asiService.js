@@ -46,12 +46,49 @@ class AsiService {
 
     async generateTasksWorkflow(prompt) {
         try {
-            const systemInstruction = "You are an ASI Task Generation Agent. Carefully extract ONLY explicit and actionable tasks based strictly on the user's prompt. Do not invent or hallucinate tasks. If no concrete tasks are found, return an empty array `[]`. Return a valid JSON array of objects with simply 'title' and 'description' properties. DO NOT include any conversational text, explanations, or markdown blocks. ONLY output the RAW JSON array.";
+            const masterSystemPrompt = `You are an autonomous AI planning agent.
+Your job is NOT just to extract tasks, but to THINK, PLAN, and EXECUTE.
+
+When a user gives a goal:
+1. Understand the intent deeply
+2. If the goal is vague (like "Hii" or "help me"), make reasonable assumptions OR provide clarification questions.
+3. Break the goal into a structured multi-step plan
+4. Convert the plan into clear, actionable tasks
+5. Assign priority (High / Medium / Low)
+6. Suggest tools or technologies if relevant
+7. Explain your reasoning briefly
+
+Always behave like a real decision-making agent, not a chatbot.
+
+If input is TOO vague, you MUST return a clarification JSON:
+{
+  "need_clarification": true,
+  "questions": ["...", "..."]
+}
+
+Otherwise, return a complete execution plan and tasks:
+{
+  "goal": "...",
+  "understanding": "...",
+  "assumptions": ["...", "..."],
+  "plan": ["step1", "step2", ...],
+  "tasks": [
+    {
+      "title": "...",
+      "description": "...",
+      "priority": "High/Medium/Low"
+    }
+  ],
+  "reasoning": "..."
+}
+
+Respond with RAW JSON ONLY. No markdown.`;
+
             const payload = {
                 model: "asi1",
                 messages: [
-                    { role: "system", content: systemInstruction },
-                    { role: "user", content: prompt }
+                    { role: "system", content: masterSystemPrompt },
+                    { role: "user", content: `User Goal: "${prompt}"\n\nGenerate a complete execution plan or ask for clarification.` }
                 ]
             };
             const response = await this.callAsiApi('/chat/completions', payload);
@@ -61,11 +98,18 @@ class AsiService {
                  textReply = response; 
             }
 
-            const jsonStr = textReply.match(/\[[\s\S]*\]/)?.[0] || textReply;
-            return JSON.parse(jsonStr);
+            const jsonObject = JSON.parse(textReply.match(/\{[\s\S]*\}/)?.[0] || textReply);
+            return jsonObject;
         } catch (e) {
-            console.warn("Failed to parse tasks from ASI, returning default.", e.message);
-            return [{ title: "Review ASI Output", description: "ASI task extraction failed or returned unstructured text." }];
+            console.warn("Failed to parse planner output from ASI, returning default.", e.message);
+            return {
+                goal: prompt,
+                understanding: "Standard task extraction",
+                assumptions: ["None"],
+                plan: ["Execute immediate request"],
+                tasks: [{ title: "Review ASI Output", description: "Plan generation failed.", priority: "High" }],
+                reasoning: "Fallback triggered due to parsing error."
+            };
         }
     }
 
@@ -115,11 +159,25 @@ class AsiService {
     getMockResponse(payload) {
         const content = JSON.stringify(payload).toLowerCase();
         
-        if (content.includes("intent detection agent") || content.includes("{ 'intents'")) {
+        if (content.includes("intent detection agent") || content.includes("{ \"intents\"")) {
             return '{ "intents": ["task_generation"] }';
         }
         if (content.includes("document analyzer")) {
             return "This is a mock ASI-1 document summary. The document contains technical specifications for an AI workflow automation platform.";
+        }
+        if (content.includes("autonomous ai planning agent")) {
+            return JSON.stringify({
+                goal: "Build a web app",
+                understanding: "The user wants to create a web app but hasn't specified the technology stack or purpose.",
+                assumptions: ["Beginner-level project", "No specific tech preference", "Likely needs full-stack guidance"],
+                plan: ["Define app idea", "Choose tech stack", "Setup project structure", "Develop frontend", "Develop backend", "Integrate APIs", "Test", "Deploy"],
+                tasks: [
+                    { title: "Define app idea", description: "Decide what the app will do and target users", priority: "High" },
+                    { title: "Choose tech stack", description: "Select technologies like React and Node.js", priority: "High" },
+                    { title: "Setup project", description: "Initialize repo and install dependencies", priority: "Medium" }
+                ],
+                reasoning: "The input was vague, so assumptions were made to create a general beginner-friendly roadmap."
+            });
         }
         if (content.includes("task generation agent") || content.includes("valid json array")) {
             return '[{"title":"Integrate ASI-1 API","description":"Map ASI API endpoints"},{"title":"Configure Express App","description":"Ensure safe cross-origin mapping"}]';

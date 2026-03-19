@@ -17,7 +17,11 @@ export const useChat = () => {
         try {
             const data = await executeWorkflow({ prompt: content });
             const assistantContent = data.reply || data.response || data.message || "Workflow executed successfully.";
-            const assistantMsg = { role: 'assistant', content: assistantContent };
+            const assistantMsg = { 
+                role: 'assistant', 
+                content: assistantContent,
+                thought: data.thought 
+            };
             setMessages(prev => [...prev, assistantMsg]);
             return data;
         } catch (error) {
